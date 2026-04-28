@@ -1,0 +1,1055 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- ═══════════════════════════════════════════
+       SEO META — edit these before deploying
+  ═══════════════════════════════════════════ -->
+  <title>Free JSON Formatter & Validator Online — No Login Required</title>
+  <meta name="description" content="Format, validate, and minify JSON instantly. Free online JSON formatter with syntax highlighting, error detection, and one-click copy. No sign-up needed.">
+  <meta name="keywords" content="json formatter, json validator, json beautifier, format json online, free json formatter no login, json minifier, json pretty print">
+  <link rel="canonical" href="https://yourdomain.com/">
+
+  <!-- Open Graph (for link previews on Slack, Reddit, Twitter) -->
+  <meta property="og:title" content="Free JSON Formatter & Validator — No Login">
+  <meta property="og:description" content="Paste JSON, get it formatted and validated instantly. Free, fast, no sign-up.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yourdomain.com/">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Free JSON Formatter & Validator">
+  <meta name="twitter:description" content="Format and validate JSON instantly. Free, no login required.">
+
+  <!-- ═══════════════════════════════════════════
+       FAQ SCHEMA — powers Google featured snippets
+  ═══════════════════════════════════════════ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "What is a JSON formatter?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "A JSON formatter (also called a JSON beautifier or pretty printer) takes compact or unreadable JSON text and adds proper indentation and line breaks so it's easy to read and debug."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Is this JSON formatter free to use?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Yes. This tool is completely free with no sign-up, no login, and no usage limits. Your JSON is processed in your browser and never sent to any server."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "How do I validate JSON online?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Paste your JSON into the input box and click Format. If your JSON has errors, the tool will highlight the exact line and describe what went wrong. Valid JSON will be formatted and highlighted automatically."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "What is JSON minification?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "JSON minification removes all whitespace, indentation, and line breaks to produce the smallest possible JSON string. This reduces file size for APIs and improves load times in production."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <!-- ═══════════════════════════════════════════
+       TOOL SCHEMA — helps Google understand the page
+  ═══════════════════════════════════════════ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "JSON Formatter & Validator",
+    "url": "https://yourdomain.com/",
+    "description": "Free online JSON formatter, validator, and minifier. No login required.",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Any",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+  }
+  </script>
+
+  <style>
+    /* ═══════════════ RESET & BASE ═══════════════ */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0d1117;
+      --bg2:       #161b22;
+      --bg3:       #21262d;
+      --border:    #30363d;
+      --border2:   #484f58;
+      --text:      #e6edf3;
+      --text2:     #8b949e;
+      --text3:     #656d76;
+      --green:     #3fb950;
+      --red:       #f85149;
+      --yellow:    #d29922;
+      --blue:      #58a6ff;
+      --purple:    #bc8cff;
+      --orange:    #ffa657;
+      --accent:    #1f6feb;
+      --accent-bg: rgba(31,111,235,0.15);
+      --radius:    8px;
+      --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+      --font-ui:   'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    html { font-size: 15px; }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-ui);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ═══════════════ LAYOUT ═══════════════ */
+    .page-wrap {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    /* ═══════════════ HEADER ═══════════════ */
+    header {
+      border-bottom: 1px solid var(--border);
+      padding: 14px 0;
+      position: sticky;
+      top: 0;
+      background: rgba(13,17,23,0.92);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--text);
+      text-decoration: none;
+    }
+
+    .logo-icon {
+      width: 28px; height: 28px;
+      background: var(--accent);
+      border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-family: var(--font-mono); font-weight: 700;
+      color: #fff;
+      flex-shrink: 0;
+    }
+
+    .header-badge {
+      font-size: 11px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      color: var(--text2);
+      padding: 3px 8px;
+      border-radius: 99px;
+    }
+
+    /* ═══════════════ HERO ═══════════════ */
+    .hero {
+      padding: 36px 0 28px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 10px;
+    }
+
+    .hero h1 span { color: var(--blue); }
+
+    .hero p {
+      color: var(--text2);
+      font-size: 1rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    /* ═══════════════ MAIN TOOL LAYOUT ═══════════════ */
+    .tool-layout {
+      display: grid;
+      grid-template-columns: 1fr 280px;
+      gap: 20px;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .tool-layout { grid-template-columns: 1fr; }
+    }
+
+    /* ═══════════════ TOOL CARD ═══════════════ */
+    .tool-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .tool-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--bg3);
+      flex-wrap: wrap;
+    }
+
+    .toolbar-label {
+      font-size: 12px;
+      color: var(--text3);
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-right: 4px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg2);
+      color: var(--text);
+      font-size: 12px;
+      font-family: var(--font-ui);
+      font-weight: 500;
+      cursor: pointer;
+      transition: background .15s, border-color .15s, transform .08s;
+      white-space: nowrap;
+    }
+
+    .btn:hover { background: var(--bg3); border-color: var(--border2); }
+    .btn:active { transform: scale(.97); }
+
+    .btn-primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #388bfd; border-color: #388bfd; }
+
+    .btn-sm { padding: 4px 9px; font-size: 11px; }
+
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 320px;
+      padding: 16px;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea::placeholder { color: var(--text3); }
+
+    .output-wrap {
+      position: relative;
+      min-height: 320px;
+    }
+
+    #output {
+      display: block;
+      width: 100%;
+      min-height: 320px;
+      padding: 16px;
+      background: transparent;
+      border: none;
+      color: var(--text);
+      font-family: var(--font-mono);
+      font-size: 13px;
+      line-height: 1.6;
+      white-space: pre;
+      overflow-x: auto;
+      tab-size: 2;
+    }
+
+    /* JSON syntax highlighting */
+    .j-key    { color: var(--blue); }
+    .j-str    { color: var(--green); }
+    .j-num    { color: var(--orange); }
+    .j-bool   { color: var(--purple); }
+    .j-null   { color: var(--purple); }
+    .j-punct  { color: var(--text2); }
+
+    /* ═══════════════ STATUS BAR ═══════════════ */
+    .status-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px;
+      border-top: 1px solid var(--border);
+      background: var(--bg3);
+      font-size: 12px;
+      color: var(--text2);
+      flex-wrap: wrap;
+    }
+
+    .status-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: var(--text3);
+      flex-shrink: 0;
+    }
+
+    .status-dot.valid   { background: var(--green); }
+    .status-dot.invalid { background: var(--red); }
+    .status-dot.idle    { background: var(--text3); }
+
+    .status-text { flex: 1; }
+    .status-text.valid   { color: var(--green); }
+    .status-text.invalid { color: var(--red); }
+
+    .stat-chip {
+      font-size: 11px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 2px 7px;
+      border-radius: 99px;
+      color: var(--text3);
+    }
+
+    /* ═══════════════ DIVIDER ═══════════════ */
+    .panel-divider {
+      border: none;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ═══════════════ SIDEBAR ═══════════════ */
+    .sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+    .sidebar-card {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .sidebar-head {
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: .07em;
+      color: var(--text3);
+    }
+
+    .sidebar-body { padding: 14px; }
+
+    /* ── Affiliate card ── */
+    .aff-item {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg3);
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: inherit;
+      transition: border-color .15s;
+    }
+
+    .aff-item:last-child { margin-bottom: 0; }
+    .aff-item:hover { border-color: var(--accent); text-decoration: none; }
+
+    .aff-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .aff-desc {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.4;
+    }
+
+    .aff-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      color: var(--blue);
+      font-weight: 500;
+      margin-top: 2px;
+    }
+
+    /* ── Tips card ── */
+    .tip-item {
+      display: flex;
+      gap: 8px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    .tip-item:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .tip-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--text3);
+      min-width: 18px;
+      margin-top: 1px;
+    }
+
+    /* ── Email capture ── */
+    .email-form { display: flex; flex-direction: column; gap: 8px; }
+
+    .email-form p {
+      font-size: 12px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    .email-form input {
+      width: 100%;
+      padding: 8px 10px;
+      background: var(--bg3);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 13px;
+      font-family: var(--font-ui);
+      outline: none;
+      transition: border-color .15s;
+    }
+
+    .email-form input:focus { border-color: var(--accent); }
+    .email-form input::placeholder { color: var(--text3); }
+
+    /* ═══════════════ COPY TOAST ═══════════════ */
+    #copy-toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--green);
+      color: #0d1117;
+      font-size: 13px;
+      font-weight: 600;
+      padding: 9px 18px;
+      border-radius: 8px;
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity .2s, transform .2s;
+      pointer-events: none;
+      z-index: 9999;
+    }
+
+    #copy-toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ═══════════════ SEO CONTENT ═══════════════ */
+    .seo-section {
+      padding: 56px 0;
+      border-top: 1px solid var(--border);
+      margin-top: 48px;
+    }
+
+    .seo-section h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-bottom: 24px;
+      letter-spacing: -0.02em;
+    }
+
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 48px;
+    }
+
+    .feature-box {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 18px;
+    }
+
+    .feature-icon {
+      font-size: 20px;
+      margin-bottom: 8px;
+    }
+
+    .feature-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+
+    .feature-desc {
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.5;
+    }
+
+    /* ═══════════════ FAQ ═══════════════ */
+    .faq-list { display: flex; flex-direction: column; gap: 2px; max-width: 720px; }
+
+    .faq-item {
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .faq-q {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      user-select: none;
+    }
+
+    .faq-q:hover { background: var(--bg3); }
+
+    .faq-chevron {
+      color: var(--text3);
+      font-size: 12px;
+      transition: transform .2s;
+      flex-shrink: 0;
+    }
+
+    .faq-item.open .faq-chevron { transform: rotate(180deg); }
+
+    .faq-a {
+      display: none;
+      padding: 0 16px 14px;
+      font-size: 13px;
+      color: var(--text2);
+      line-height: 1.6;
+      border-top: 1px solid var(--border);
+    }
+
+    .faq-item.open .faq-a { display: block; padding-top: 12px; }
+
+    /* ═══════════════ FOOTER ═══════════════ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+      margin-top: 32px;
+    }
+
+    .footer-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 16px;
+      font-size: 13px;
+      color: var(--text3);
+      flex-wrap: wrap;
+    }
+
+    .footer-links a { color: var(--text3); }
+    .footer-links a:hover { color: var(--text2); }
+
+    .footer-note {
+      font-size: 12px;
+      color: var(--text3);
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════ -->
+<header>
+  <div class="page-wrap">
+    <div class="header-inner">
+      <a href="/" class="logo">
+        <div class="logo-icon">{}</div>
+        JSON Tools
+      </a>
+      <span class="header-badge">100% free · runs in your browser</span>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════
+     HERO
+═══════════════════════════════════════════ -->
+<div class="page-wrap">
+  <div class="hero">
+    <h1>Free JSON <span>Formatter</span> & Validator</h1>
+    <p>Paste your JSON below to format, validate, or minify it instantly — no login, no limits, no data sent to any server.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       MAIN TOOL + SIDEBAR
+  ═══════════════════════════════════════════ -->
+  <div class="tool-layout">
+
+    <!-- LEFT: THE TOOL -->
+    <div>
+
+      <!-- INPUT PANEL -->
+      <div class="tool-card" style="margin-bottom:16px;">
+        <div class="tool-toolbar">
+          <span class="toolbar-label">Input</span>
+          <button class="btn btn-primary" onclick="formatJSON()">▶ Format</button>
+          <button class="btn" onclick="minifyJSON()">Minify</button>
+          <button class="btn" onclick="clearAll()">Clear</button>
+          <button class="btn" onclick="loadSample()">Load sample</button>
+        </div>
+        <textarea
+          id="input"
+          placeholder='Paste your JSON here…&#10;&#10;{"name": "example", "value": 42}'
+          oninput="liveValidate()"
+          spellcheck="false"
+        ></textarea>
+        <div class="status-bar" id="input-status">
+          <div class="status-dot idle" id="input-dot"></div>
+          <span class="status-text" id="input-msg">Ready — paste JSON and click Format</span>
+        </div>
+      </div>
+
+      <!-- OUTPUT PANEL -->
+      <div class="tool-card">
+        <div class="tool-toolbar">
+          <span class="toolbar-label">Output</span>
+          <button class="btn btn-sm" onclick="copyOutput()">⎘ Copy</button>
+          <button class="btn btn-sm" onclick="downloadOutput()">↓ Download</button>
+          <div style="margin-left:auto;display:flex;gap:6px;align-items:center;">
+            <span style="font-size:11px;color:var(--text3)">Indent:</span>
+            <select id="indent-size" onchange="formatJSON()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:4px;padding:3px 6px;font-size:11px;outline:none;">
+              <option value="2" selected>2 spaces</option>
+              <option value="4">4 spaces</option>
+              <option value="1">1 tab</option>
+            </select>
+          </div>
+        </div>
+        <div class="output-wrap">
+          <pre id="output">Formatted output will appear here…</pre>
+        </div>
+        <div class="status-bar" id="output-status">
+          <div class="status-dot idle" id="output-dot"></div>
+          <span class="status-text" id="output-msg">Waiting for input</span>
+          <span class="stat-chip" id="stat-keys" style="display:none"></span>
+          <span class="stat-chip" id="stat-size" style="display:none"></span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: SIDEBAR -->
+    <div class="sidebar">
+
+      <!-- ── AFFILIATE: Hosting ── -->
+      <!-- REPLACE href with your actual Hostinger affiliate link -->
+      <div class="sidebar-card">
+        <div class="sidebar-head">🛠 Build & deploy your own tools</div>
+        <div class="sidebar-body">
+          <a class="aff-item" href="https://www.hostinger.com/?REFERRALCODE=YOURCODE" target="_blank" rel="sponsored noopener">
+            <span class="aff-name">Hostinger</span>
+            <span class="aff-desc">Host unlimited projects from $2.99/month. Perfect for deploying your own web tools.</span>
+            <span class="aff-cta">Get 80% off hosting →</span>
+          </a>
+          <!-- REPLACE with your Namecheap affiliate link -->
+          <a class="aff-item" href="https://www.namecheap.com/?aff=YOURCODE" target="_blank" rel="sponsored noopener">
+            <span class="aff-name">Namecheap</span>
+            <span class="aff-desc">Get a custom .com domain from $8.88/year for your developer projects.</span>
+            <span class="aff-cta">Find your domain →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ── AFFILIATE: Dev tools ── -->
+      <div class="sidebar-card">
+        <div class="sidebar-head">⚡ Level up your dev workflow</div>
+        <div class="sidebar-body">
+          <!-- REPLACE with GitHub Copilot affiliate / referral link if available, else use a relevant SaaS -->
+          <a class="aff-item" href="https://github.com/features/copilot" target="_blank" rel="noopener">
+            <span class="aff-name">GitHub Copilot</span>
+            <span class="aff-desc">AI pair programmer that writes code for you. Free for students and OSS maintainers.</span>
+            <span class="aff-cta">Try Copilot free →</span>
+          </a>
+          <!-- REPLACE with Vercel referral or affiliate -->
+          <a class="aff-item" href="https://vercel.com" target="_blank" rel="noopener">
+            <span class="aff-name">Vercel</span>
+            <span class="aff-desc">Deploy frontend projects in seconds. Free tier is generous enough for most side projects.</span>
+            <span class="aff-cta">Deploy free →</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- ── TIPS ── -->
+      <div class="sidebar-card">
+        <div class="sidebar-head">💡 JSON tips</div>
+        <div class="sidebar-body" style="padding-top:10px;">
+          <div class="tip-item"><span class="tip-num">01</span><span>All keys must be in <strong>double quotes</strong> — single quotes are invalid JSON.</span></div>
+          <div class="tip-item"><span class="tip-num">02</span><span>Trailing commas after the last item in an array or object will cause a parse error.</span></div>
+          <div class="tip-item"><span class="tip-num">03</span><span><code style="font-size:11px;color:var(--orange)">undefined</code>, <code style="font-size:11px;color:var(--orange)">NaN</code>, and <code style="font-size:11px;color:var(--orange)">Infinity</code> are JavaScript values — not valid JSON.</span></div>
+          <div class="tip-item"><span class="tip-num">04</span><span>Use <strong>minify mode</strong> before sending JSON in API requests to save bandwidth.</span></div>
+        </div>
+      </div>
+
+      <!-- ── EMAIL CAPTURE ── -->
+      <div class="sidebar-card">
+        <div class="sidebar-head">📬 Get new tools first</div>
+        <div class="sidebar-body">
+          <!-- REPLACE action with your ConvertKit / Mailchimp embed URL -->
+          <div class="email-form">
+            <p>We're building more free developer tools. Get notified when we launch.</p>
+            <input type="email" id="email-input" placeholder="you@example.com">
+            <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="submitEmail()">Notify me</button>
+          </div>
+          <p id="email-msg" style="display:none;font-size:12px;color:var(--green);margin-top:8px;">✓ You're on the list!</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+       SEO CONTENT SECTION
+  ═══════════════════════════════════════════ -->
+  <div class="seo-section">
+    <h2>Why use this JSON formatter?</h2>
+    <div class="features-grid">
+      <div class="feature-box">
+        <div class="feature-icon">🔒</div>
+        <div class="feature-title">100% private</div>
+        <div class="feature-desc">All processing happens in your browser. Your JSON data never leaves your computer or gets sent to any server.</div>
+      </div>
+      <div class="feature-box">
+        <div class="feature-icon">⚡</div>
+        <div class="feature-title">Instant results</div>
+        <div class="feature-desc">Format JSON of any size in milliseconds. No page reloads, no waiting for a server response.</div>
+      </div>
+      <div class="feature-box">
+        <div class="feature-icon">🎨</div>
+        <div class="feature-title">Syntax highlighting</div>
+        <div class="feature-desc">Keys, strings, numbers, booleans, and nulls are each colour-coded so your JSON is easy to scan.</div>
+      </div>
+      <div class="feature-box">
+        <div class="feature-icon">🐛</div>
+        <div class="feature-title">Precise error detection</div>
+        <div class="feature-desc">When your JSON is invalid, you get the exact line number and a description of what went wrong.</div>
+      </div>
+    </div>
+
+    <!-- FAQ — also rendered by Google for featured snippets -->
+    <h2 id="faq">Frequently asked questions</h2>
+    <div class="faq-list">
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">What is a JSON formatter? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">A JSON formatter (also called a JSON beautifier or pretty printer) takes compact or minified JSON text and adds proper indentation and line breaks to make it human-readable. This is especially useful when debugging API responses.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Is this JSON formatter free? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">Yes — completely free, no sign-up, no login, and no usage limits. Processing happens in your browser, not on a server, so there are no costs to us and your data stays private.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">How do I validate JSON online? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">Paste your JSON into the input box and click Format. If the JSON is invalid, the status bar will turn red and show you exactly which line contains the error. Valid JSON will be formatted with syntax highlighting.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">What is JSON minification? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">Minification removes all whitespace from JSON to produce the smallest possible string. This reduces file size and speeds up API calls in production. Click the Minify button to see it in action.</div>
+      </div>
+      <div class="faq-item" onclick="toggleFaq(this)">
+        <div class="faq-q">Why is my JSON invalid? <span class="faq-chevron">▼</span></div>
+        <div class="faq-a">Common causes: keys not in double quotes, trailing commas after the last item, using single quotes instead of double quotes, or JavaScript-only values like undefined or NaN. This tool will tell you which line has the problem.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════ -->
+<footer>
+  <div class="page-wrap">
+    <div class="footer-inner">
+      <div class="footer-links">
+        <a href="/">JSON Formatter</a>
+        <a href="/about">About</a>
+        <a href="/privacy">Privacy</a>
+        <!-- Add links to other tools as you build them -->
+      </div>
+      <p class="footer-note">Affiliate links help keep this tool free. We only recommend tools we'd use ourselves.</p>
+    </div>
+  </div>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     COPY TOAST
+═══════════════════════════════════════════ -->
+<div id="copy-toast">Copied to clipboard!</div>
+
+<!-- ═══════════════════════════════════════════
+     JAVASCRIPT
+═══════════════════════════════════════════ -->
+<script>
+// ── Syntax highlighter ──────────────────────────
+function highlightJSON(str) {
+  // Escape HTML first
+  str = str
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;');
+
+  return str.replace(
+    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?|[{}\[\],:])/g,
+    function(match) {
+      let cls = 'j-num';
+      if (/^"/.test(match)) {
+        cls = /:$/.test(match) ? 'j-key' : 'j-str';
+      } else if (/true|false/.test(match)) {
+        cls = 'j-bool';
+      } else if (/null/.test(match)) {
+        cls = 'j-null';
+      } else if (/[{}\[\]]/.test(match)) {
+        cls = 'j-punct';
+      } else if (/[:,]/.test(match)) {
+        cls = 'j-punct';
+      }
+      return '<span class="' + cls + '">' + match + '</span>';
+    }
+  );
+}
+
+// ── Count keys (depth-first) ─────────────────────
+function countKeys(obj, depth) {
+  if (typeof obj !== 'object' || obj === null) return 0;
+  let count = 0;
+  for (const k in obj) {
+    count++;
+    count += countKeys(obj[k], depth + 1);
+  }
+  return count;
+}
+
+// ── Core: format ─────────────────────────────────
+function formatJSON() {
+  const raw = document.getElementById('input').value.trim();
+  if (!raw) { clearOutput(); return; }
+
+  const indentVal = document.getElementById('indent-size').value;
+  const indent = indentVal === '1' ? '\t' : parseInt(indentVal);
+
+  try {
+    const parsed = JSON.parse(raw);
+    const formatted = JSON.stringify(parsed, null, indent);
+    const highlighted = highlightJSON(formatted);
+
+    document.getElementById('output').innerHTML = highlighted;
+
+    // Stats
+    const keys = countKeys(parsed, 0);
+    const size = new Blob([formatted]).size;
+    setOutputStatus('valid', '✓ Valid JSON');
+    showStats(keys, size);
+    setInputStatus('valid', '✓ Valid JSON');
+  } catch(e) {
+    document.getElementById('output').textContent = '';
+    const msg = e.message || 'Invalid JSON';
+    setOutputStatus('invalid', '✗ ' + msg);
+    setInputStatus('invalid', '✗ ' + msg);
+    hideStats();
+  }
+}
+
+// ── Core: minify ──────────────────────────────────
+function minifyJSON() {
+  const raw = document.getElementById('input').value.trim();
+  if (!raw) return;
+  try {
+    const parsed = JSON.parse(raw);
+    const minified = JSON.stringify(parsed);
+    document.getElementById('output').textContent = minified;
+    const size = new Blob([minified]).size;
+    setOutputStatus('valid', '✓ Minified — ' + size + ' bytes');
+    setInputStatus('valid', '✓ Valid JSON');
+    hideStats();
+    showStats(countKeys(parsed,0), size);
+  } catch(e) {
+    setOutputStatus('invalid', '✗ ' + (e.message || 'Invalid JSON'));
+    setInputStatus('invalid', '✗ ' + (e.message || 'Invalid JSON'));
+  }
+}
+
+// ── Live validate as user types ───────────────────
+let liveTimer;
+function liveValidate() {
+  clearTimeout(liveTimer);
+  liveTimer = setTimeout(() => {
+    const raw = document.getElementById('input').value.trim();
+    if (!raw) { setInputStatus('idle', 'Ready — paste JSON and click Format'); return; }
+    try {
+      JSON.parse(raw);
+      setInputStatus('valid', '✓ Valid JSON');
+    } catch(e) {
+      setInputStatus('invalid', '✗ ' + (e.message || 'Invalid JSON'));
+    }
+  }, 300);
+}
+
+// ── Helpers ───────────────────────────────────────
+function clearAll() {
+  document.getElementById('input').value = '';
+  document.getElementById('output').textContent = 'Formatted output will appear here…';
+  setInputStatus('idle', 'Ready — paste JSON and click Format');
+  setOutputStatus('idle', 'Waiting for input');
+  hideStats();
+}
+
+function clearOutput() {
+  document.getElementById('output').textContent = 'Formatted output will appear here…';
+  setOutputStatus('idle', 'Waiting for input');
+  hideStats();
+}
+
+function loadSample() {
+  const sample = {
+    "name": "json-tool",
+    "version": "1.0.0",
+    "description": "A free JSON formatter and validator",
+    "features": ["format", "validate", "minify", "highlight"],
+    "author": { "name": "Your Name", "url": "https://yourdomain.com" },
+    "stats": { "users": 12500, "free": true, "rating": 4.9 },
+    "tags": ["json", "developer", "free", "tool"]
+  };
+  document.getElementById('input').value = JSON.stringify(sample);
+  formatJSON();
+}
+
+function copyOutput() {
+  const content = document.getElementById('output').textContent;
+  if (!content || content.startsWith('Formatted')) return;
+  navigator.clipboard.writeText(content).then(() => {
+    const t = document.getElementById('copy-toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  });
+}
+
+function downloadOutput() {
+  const content = document.getElementById('output').textContent;
+  if (!content || content.startsWith('Formatted')) return;
+  const blob = new Blob([content], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'formatted.json'; a.click();
+  URL.revokeObjectURL(url);
+}
+
+function setInputStatus(state, msg) {
+  document.getElementById('input-dot').className = 'status-dot ' + state;
+  const el = document.getElementById('input-msg');
+  el.textContent = msg;
+  el.className = 'status-text ' + state;
+}
+
+function setOutputStatus(state, msg) {
+  document.getElementById('output-dot').className = 'status-dot ' + state;
+  const el = document.getElementById('output-msg');
+  el.textContent = msg;
+  el.className = 'status-text ' + state;
+}
+
+function showStats(keys, bytes) {
+  const kb = (bytes / 1024).toFixed(1);
+  document.getElementById('stat-keys').textContent = keys + ' values';
+  document.getElementById('stat-size').textContent = bytes < 1024 ? bytes + ' B' : kb + ' KB';
+  document.getElementById('stat-keys').style.display = '';
+  document.getElementById('stat-size').style.display = '';
+}
+
+function hideStats() {
+  document.getElementById('stat-keys').style.display = 'none';
+  document.getElementById('stat-size').style.display = 'none';
+}
+
+// ── FAQ accordion ─────────────────────────────────
+function toggleFaq(el) {
+  el.classList.toggle('open');
+}
+
+// ── Email capture (wire to ConvertKit / Mailchimp) ─
+function submitEmail() {
+  const email = document.getElementById('email-input').value.trim();
+  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
+
+  // TODO: Replace this fetch with your actual ConvertKit/Mailchimp API endpoint
+  // Example ConvertKit:
+  // fetch('https://api.convertkit.com/v3/forms/YOUR_FORM_ID/subscribe', {
+  //   method: 'POST',
+  //   headers: { 'Content-Type': 'application/json' },
+  //   body: JSON.stringify({ api_key: 'YOUR_API_KEY', email: email })
+  // });
+
+  document.getElementById('email-input').style.display = 'none';
+  document.querySelector('.email-form button').style.display = 'none';
+  document.getElementById('email-msg').style.display = 'block';
+}
+
+// ── Keyboard shortcut: Cmd/Ctrl+Enter to format ───
+document.addEventListener('keydown', function(e) {
+  if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') {
+    e.preventDefault();
+    formatJSON();
+  }
+});
+</script>
+</body>
+</html>
