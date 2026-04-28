@@ -438,31 +438,6 @@
       margin-top: 1px;
     }
 
-    /* ── Email capture ── */
-    .email-form { display: flex; flex-direction: column; gap: 8px; }
-
-    .email-form p {
-      font-size: 12px;
-      color: var(--text2);
-      line-height: 1.5;
-    }
-
-    .email-form input {
-      width: 100%;
-      padding: 8px 10px;
-      background: var(--bg3);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      color: var(--text);
-      font-size: 13px;
-      font-family: var(--font-ui);
-      outline: none;
-      transition: border-color .15s;
-    }
-
-    .email-form input:focus { border-color: var(--accent); }
-    .email-form input::placeholder { color: var(--text3); }
-
     /* ═══════════════ COPY TOAST ═══════════════ */
     #copy-toast {
       position: fixed;
@@ -742,20 +717,6 @@
         </div>
       </div>
 
-      <!-- ── EMAIL CAPTURE ── -->
-      <div class="sidebar-card">
-        <div class="sidebar-head">📬 Get new tools first</div>
-        <div class="sidebar-body">
-          <!-- REPLACE action with your ConvertKit / Mailchimp embed URL -->
-          <div class="email-form">
-            <p>We're building more free developer tools. Get notified when we launch.</p>
-            <input type="email" id="email-input" placeholder="you@example.com">
-            <button class="btn btn-primary" style="width:100%;justify-content:center;" onclick="submitEmail()">Notify me</button>
-          </div>
-          <p id="email-msg" style="display:none;font-size:12px;color:var(--green);margin-top:8px;">✓ You're on the list!</p>
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -1023,24 +984,6 @@ function hideStats() {
 // ── FAQ accordion ─────────────────────────────────
 function toggleFaq(el) {
   el.classList.toggle('open');
-}
-
-// ── Email capture (wire to ConvertKit / Mailchimp) ─
-function submitEmail() {
-  const email = document.getElementById('email-input').value.trim();
-  if (!email || !email.includes('@')) { alert('Please enter a valid email address.'); return; }
-
-  // TODO: Replace this fetch with your actual ConvertKit/Mailchimp API endpoint
-  // Example ConvertKit:
-  // fetch('https://api.convertkit.com/v3/forms/YOUR_FORM_ID/subscribe', {
-  //   method: 'POST',
-  //   headers: { 'Content-Type': 'application/json' },
-  //   body: JSON.stringify({ api_key: 'YOUR_API_KEY', email: email })
-  // });
-
-  document.getElementById('email-input').style.display = 'none';
-  document.querySelector('.email-form button').style.display = 'none';
-  document.getElementById('email-msg').style.display = 'block';
 }
 
 // ── Keyboard shortcut: Cmd/Ctrl+Enter to format ───
